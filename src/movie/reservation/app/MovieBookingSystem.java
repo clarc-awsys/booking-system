@@ -45,25 +45,26 @@ public final class MovieBookingSystem extends BookingSystem {
         return true;
       }
     }
-    System.out.println("No tickets available for this showtime");
     return false;
   }
 
   @Override
   public void bookTicket(final String showTime, final int tickets) {
     if (!checkAvailability(showTime)) {
+      System.out.println("No tickets available for this showtime");
       return;
     }
     for (Movie movies : movieSchedule) {
       if (movies.thisSchedule.equals(showTime)) {
         if (movies.thisTicketsAvailable < tickets) {
-          System.out.println("Not enough tickets available for this showtime");
+          System.out.println("Not enough tickets available for this purchase");
           return;
         }
-        movies.setTicketsBooked(tickets);
+        movies.setTicketsBooked(movies.getTicketsBooked() + tickets);
         movies.setTicketsAvailable(movies.getTicketsAvailable() - tickets);
         System.out.println(tickets + " ticket(s) successfully booked for "
         + showTime);
+        return;
       }
     }
   }
@@ -81,8 +82,10 @@ public final class MovieBookingSystem extends BookingSystem {
         movies.setTicketsAvailable(movies.getTicketsAvailable() + tickets);
         System.out.println(tickets + " ticket(s) successfully cancelled for "
         + showTime);
+        return;
       }
     }
+    System.out.println("No shows has been found.");
   }
   /**
    * Displays all available shows.
