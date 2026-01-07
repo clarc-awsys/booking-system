@@ -31,7 +31,7 @@ public final class MovieBookingSystem extends BookingSystem {
     movieSchedule.add(new Movie(thirtySeven, "5:00 PM"));
     movieSchedule.add(new Movie(thirtySeven, "6:00 PM"));
     movieSchedule.add(new Movie(sixtySeven, "7:00 PM"));
-    movieSchedule.add(new Movie(sixtySeven, "8:00 PM"));
+    movieSchedule.add(new Movie(0, "8:00 PM"));
     movieSchedule.add(new Movie(thirtySeven, "9:00 PM"));
   }
   /**
@@ -39,15 +39,12 @@ public final class MovieBookingSystem extends BookingSystem {
    */
   @Override
   public boolean checkAvailability(final String showTime) {
-    for (Movie movie:movieSchedule) {
-      if (movie.thisSchedule.equals(showTime)
-          && movie.thisTicketsAvailable > 0) {
-        return true;
-      }
-    }
-    return false;
+    return movieSchedule.stream()
+        .anyMatch(schedule ->
+          schedule.thisSchedule.equals(showTime)
+          && schedule.thisTicketsAvailable > 0
+        );
   }
-
   @Override
   public void bookTicket(final String showTime, final int tickets) {
     if (!checkAvailability(showTime)) {
@@ -57,7 +54,7 @@ public final class MovieBookingSystem extends BookingSystem {
     for (Movie movies : movieSchedule) {
       if (movies.thisSchedule.equals(showTime)) {
         if (movies.thisTicketsAvailable < tickets) {
-          System.out.println("Not enough tickets available for this purchase");
+          System.out.println("Not enough tickets available for this showtime");
           return;
         }
         movies.setTicketsBooked(movies.getTicketsBooked() + tickets);
@@ -91,10 +88,11 @@ public final class MovieBookingSystem extends BookingSystem {
    * Displays all available shows.
    */
   public void showAvailableShows() {
-    for (Movie movies : movieSchedule) {
-      System.out.println("Time: " + movies.getSchedule()
-      + " Tickets Available - " + movies.getTicketsAvailable());
-    }
+    movieSchedule.forEach(
+        (schedule) -> System.out.println(
+            "Time: " + schedule.getSchedule()
+            + " Tickets Available - " + schedule.getTicketsAvailable()
+        ));
   }
   /**
    * Movie Class.
@@ -136,9 +134,6 @@ public final class MovieBookingSystem extends BookingSystem {
     }
     public String getSchedule() {
       return thisSchedule;
-    }
-    public void setSchedule(final String schedule) {
-      thisSchedule = schedule;
     }
   }
 

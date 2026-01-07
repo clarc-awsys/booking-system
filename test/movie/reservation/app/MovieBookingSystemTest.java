@@ -32,10 +32,23 @@ class MovieBookingSystemTest {
   }
   
   @Test
+  void testCancelReservation_IfShowIsNotFound_DisplayShowIsNotFound() {
+    system.cancelReservation("110:00 AM", 2);
+    assertTrue(outContent.toString().contains("No shows has been found."));
+  }
+  
+  @Test
   void testBookTicket_IfTicketsToBuyIsValid_DisplaysSuccessfulReservation() {
     system.bookTicket("12:00 PM", 4);
     
     assertTrue(outContent.toString().contains("ticket(s) successfully booked for"));
+  }
+  
+  @Test
+  void testBookTicket_IfTicketsToBuyIsZero_DisplaysNoTicketsAvailable() {
+    system.bookTicket("8:00 PM", 1);
+    
+    assertTrue(outContent.toString().contains("No tickets available for this showtime"));
   }
   
   @Test
